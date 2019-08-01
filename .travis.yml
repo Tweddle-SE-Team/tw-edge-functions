@@ -1,0 +1,18 @@
+dist: trusty
+
+script:
+- rm -rf */edge/builds/
+- ls -1d */edge/ | xargs -I{} rsync -Rr {}/./ {}/builds/
+- ls -1d */edge/builds/* | xargs -I{} zip -rDj {}/edge-function.zip {}
+- cd ../
+- zip -r build-${TRAVIS_TAG}.zip tw-edge-functions
+
+deploy:
+  provider: releases
+  file: build-${TRAVIS_TAG}.zip
+  skip-cleanup: true
+  api_key:
+    secure: bNA4gXcLxc/YY6cXUrGClWCFemEG770Yy4GdJGFg4fiC+kmFrwZXreSt95tlfIcZeI/eJEIEmJHeSPe17k1HvS3s19k6HR80BYY6bVKG66cE+rGF0V+SoOA7wp/sip7AGe4ukLjk7fODHuG0zpEY0AyxxGddbntK4osEwWzAgxKOZMsSTqDRS7S0FCXMoKOX7fp9RbmW5xDIRRuEScs3KyZYgIvJGqlt+mQp5nSR66LQDup3gFxf0xlAiwVV4AfMmAW7YHYieuyihwvcbumWAbyDciQihCHZsCeCHiQdYVBg9CDLjrNZYt7pWWVlP18rGdHOEyPRF4FvibwEf/sz++D0PZK31Eiae6dEzkxbiiiHKEsMoc1sS80UFXr5gWAR2QqmI8OiR3nkyYWhIiLVvqwq9StjBajtvbN/SpDJ8Kgw3XTB3K0H4SZRYbAAhIe3rZcOI2/AcEAzU5EaYQ2XPOJwDRjBHhG045BwLlaYl0uPO6ANalBS8p2vKQM37uf2Y2a1dYMhdOiNhhNL3SkEHPu9TydgGs4qazqX6COijMKLEJKFxXFVVPFFDeIR2oR7GIKVkgByWqJDpwcsvySy2HsjNxv/sA2939kb8Fw0PasdUAGdjWETCapTHcPT0oCBUx8OAZIh9pC1mlZk5vHeFgwQ4dUzOgkJtZ2QwC3kVuE=
+  on:
+    repo: Tweddle-SE-Team/tw-edge-functions
+    tags: true
