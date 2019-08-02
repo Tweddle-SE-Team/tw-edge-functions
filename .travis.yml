@@ -1,15 +1,18 @@
 dist: trusty
+language: minimal
 
 script:
-- rm -rf */edge/builds/
-- ls -1d */edge/ | xargs -I{} rsync -Rr {}/./ {}/builds/
-- ls -1d */edge/builds/* | xargs -I{} zip -rDj {}/edge-function.zip {}
-- cd ../
-- zip -r build-${TRAVIS_TAG}.zip tw-edge-functions
+- rm -rf ./builds/
+- ls -1d src/* | xargs -I{} rsync -r {} builds/
+- ls -1d builds/* | xargs -I{} zip -rDj {}/edge-function.zip {}
+- ls -1d builds/* | xargs -I{} zip -rDj {}.zip {}
+- find ./builds/ -type f -name "*.zip" -exec sh -c "md5sum --quiet {} > {}.md5" \;
+- find ./builds/* -type d | xargs -I{} rm -rf {}
 
 deploy:
   provider: releases
-  file: build-${TRAVIS_TAG}.zip
+  file_glob: true
+  file: ./builds/*
   skip-cleanup: true
   on:
     repo: Tweddle-SE-Team/tw-edge-functions
