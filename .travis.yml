@@ -5,7 +5,7 @@ script:
 - rm -rf ./builds/
 - ls -1d src/* | xargs -I{} rsync -r {} builds/
 - ls -1d builds/* | xargs -I{} zip -rDj {}.zip {}
-- find ./builds/ -type f -name "*.zip" -exec sh -c "md5sum {} | cut -d\" \" -f1 > {}.md5" \;
+- find ./builds/ -type f -name "*.zip" -exec sh -c "md5sum {} | cut -d\" \" -f1 > {}.md5.txt" \;
 - find ./builds/* -type d | xargs -I{} rm -rf {}
 
 deploy:
