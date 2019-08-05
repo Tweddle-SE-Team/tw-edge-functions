@@ -13,7 +13,8 @@ script:
 deploy:
   provider: releases
   file_glob: true
-  file: ./builds/*
+  file: ./builds/*.zip
+  file: ./builds/check_headers.json
   body: "Test body"
   skip-cleanup: true
   on:
