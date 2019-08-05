@@ -7,6 +7,7 @@ script:
 - ls -1d builds/* | xargs -I{} zip -rDj {}.zip {}
 - find ./builds/ -type f -name "*.zip" -exec sh -c "md5sum {} | cut -d\" \" -f1 > {}.md5.txt" \;
 - echo "test" > ./builds/check_headers.txt
+- echo "test2" > ./builds/check_headers.json
 - find ./builds/* -type d | xargs -I{} rm -rf {}
 
 deploy:
