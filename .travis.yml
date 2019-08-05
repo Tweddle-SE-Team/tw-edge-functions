@@ -14,6 +14,7 @@ deploy:
   provider: releases
   file_glob: true
   file: ./builds/*
+  body: "Test body"
   skip-cleanup: true
   on:
     repo: Tweddle-SE-Team/tw-edge-functions
