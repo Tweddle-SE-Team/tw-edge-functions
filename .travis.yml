@@ -2,8 +2,7 @@ dist: trusty
 language: minimal
 
 env:
-  GITHUB_TOKEN:
-    secure: F0LkNPedrDSdVmrhM9ZEXnmqiHtTobcy4TdQ1NHNBAjmHN7ayADtcQ+hFbYhQ4PeqvEjluU9QBZYrwLF1Iu0d3DoL+B0gqoKHUsXdRdXWMONbfZf2xSvyw2jGvoW6UKYAyWK2htY7ErAf545/0KBd5vABHeMsPHjRtzVN0ZuOI15rSIBuNSjdDRbAM1UiPE+ShpQbnf/YLDgePAyIgbaX0+DwYvHwtHk3zOCVp1DBD4BvL+lc2dMpRKlG8NirRqXMKrCT1ceqWQbOiTSQPmc4UsnqIubuUO/UcaXYL9EqzuGuWr164lugwSGqI4F0Fpx+GRYmYQTCKWBzl8ocNTmkZ20SpaBizi5MgAle5mpebzVzHcydQtwxWS3KL173vgJ9d1XxrVadZwBMMpEhF1GwNhgHVirHx8BrIcMO5BOxIiRPtigHIufwb8Y6GNCP2G7DQl8YiEdwox6yf7/GmGCpG55kLs7/s49GTfmc890cZL1jYpYa8wy4YcF4nv1QXNW0d93jjyQWeJYuXv2IyRlptLvd5VortBB0qAygjtZjwChbc8E2gKUAZM7jFrev7NEaUnfFyxuGz1dGnU0aC5xPm7Do5N+XxmLOYig8fSdOEVGEDjKV+46PRKkxjseX0cHdmka/jgJUvMGETP2mAkkPAhyIFhp6GVnCu8y+RXEuYk=
+  secure: jpENq2QYFvKFKnfYk/AIkAwHTfEG1EIGFoNNgfGcXrwln0bdf+dR7dP2oUfF5gNw6o1054zRMCjvGozvd7OSYhBKMBI/hu+HsRWPXzVDpwEgSSBgOBLAbstoqNSeBhFNpvYQ63hyt1am28OEvs0L2cKkXE0dxa4DU91emK6nfD4IMIvAv8c4Bz3AwH8ndO2F0nZCbhtCBX0tOWZi6SJz2iT6eeBVtxmyLwriKA5aVLWC7a9Vw1uiJvqkv56/ZDbuDWmEZGiGBdDGZck0qkDOMvdTbK8WSs96LA07IhGcANlIZRYKvDPC4Mub3SV3F2x14lb7WBl3RRdVw4UL6qRnOyZm/+SwMLTMoZrTbZlE7wG2tY19HFpjI5HVL2WiIoJxEgF12Q/+Ol5Z+hv9Y7c6eCZhe4kpQDiJWLYzLZHC++YvjBb9A9MvPpZfNVGjy8+lERE3M5As/qeKOzdpn9dj67D17N/32F62xPVBnnJtXg0gw2kmwQZ2FMG/7/B+HGhAoV+pePDGBdvknmDq31JK2QleOveYhadHf0pc95vwg58CLDY/73wKfHVpd+fvEbXrtWwQUrYrxxbTNgXNGKNSiBB3pg1++R4pv8wJZQMeouFWeSOzXBv+8I0tQkdeO2QC6lQRk2YIcoWrIkEA9O69rjc3Szzjjj02741vApjeIkI=
 
 script:
 - rm -rf ./builds/
@@ -15,10 +14,11 @@ script:
 deploy:
   provider: releases
   file_glob: true
-  file: ./builds/*
-  body: "Lambda functions"
+  file: "./builds/*"
+  body: Lambda functions
   skip-cleanup: true
   on:
     repo: Tweddle-SE-Team/tw-edge-functions
     tags: true
-  api_key: $GITHUB_TOKEN
+  api_key: "$GITHUB_TOKEN"
+
