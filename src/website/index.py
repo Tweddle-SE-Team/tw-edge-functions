@@ -62,29 +62,37 @@ def parse_lambda_alias_arn(arn):
 def build_lambda_arn(name, region, account_id):
   return f"arn:aws:lambda:{region}:{account_id}:function:{name}"
 
+def get_headers(raw_headers):
+    headers = {}
+    for header, values in raw_headers.items():
+        headers[header] = []
+        for value in values:
+            for v in value['value'].split(","):
+                headers[header].append(v)
+    return headers
+
 def handler(event, context):
   request = event["Records"][0]["cf"]["request"]
-  if request['origin'].get('s3'):
-    headers = request['headers']
-    custom_headers = request['origin']['s3']['customHeaders']
-    if custom_headers.get('analytics-host') and custom_headers['analytics-host'][0]['value'] == urlparse(headers['referer'][0]['value']).netloc:
-      analytics_addr = custom_headers['analytics-addr'][0]['value']
-      expected_auth = custom_headers['analytics-auth'][0]['value']
-      args = parse_lambda_alias_arn(context.invoked_function_arn)
-      function_arn = build_lambda_arn(**args)
-      aws_lambda = boto3.client("lambda", region_name=args['region'])
-      response = aws_lambda.list_tags(
-        Resource=function_arn
-      )
-      tags = response['Tags']
-      client = tags['Brand'] if tags.get('Brand') else tags['Client']
-      if not request['headers'].get('authorization') or request['headers']['authorization'][0]['value'] != expected_auth:
-        return unauthorized()
-      body = get_analytics_page(client, analytics_addr)
-      return analytics_response(body)
-    else:
-      if not pathlib.Path(request['uri']).suffix:
-        request['uri'] = '/index.html'
+  if 's3' in request['origin']:
+      headers = get_headers(request['headers'])
+      host = urlparse(headers['referer'][0]).netloc
+      custom_headers = get_headers(request['origin']['s3']['customHeaders'])
+      if 'analytics-host' in custom_headers and host in custom_headers['analytics-host']:
+          if not 'authorization' in headers or not 'analytics-auth' in custom_headers or headers['authorization'][0] in custom_headers['analytics-auth']:
+              return unauthorized()
+          args = parse_lambda_alias_arn(context.invoked_function_arn)
+          function_arn = build_lambda_arn(**args)
+          aws_lambda = boto3.client("lambda", region_name=args['region'])
+          response = aws_lambda.list_tags(
+            Resource=function_arn
+          )
+          tags = response['Tags']
+          client = tags['Brand'] if tags.get('Brand') else tags['Client']
+          body = get_analytics_page(client, headers['analytics-addr'][0])
+          return analytics_response(body)
+      else:
+          if not pathlib.Path(request['uri']).suffix:
+              request['uri'] = '/index.html'
   elif request['origin'].get('custom'):
     if request['uri'].startswith("/logs"):
       if request['method'] == "POST":
