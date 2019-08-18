@@ -102,5 +102,5 @@ def handler(event, context):
         if request['uri'].startswith("/logs"):
           if request['method'] == "POST":
             custom_headers = get_headers(request['origin']['custom']['customHeaders'])
-            request['uri'] = custom_headers['ingest-path']
+            request['uri'] = custom_headers['ingest-path'][0]
   return request
