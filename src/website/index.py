@@ -101,6 +101,6 @@ def handler(event, context):
       elif request['origin'].get('custom'):
         if request['uri'].startswith("/logs"):
           if request['method'] == "POST":
-            custom_headers = get_headers(request['origin']['s3']['customHeaders'])
+            custom_headers = get_headers(request['origin']['custom']['customHeaders'])
             request['uri'] = custom_headers['ingest-path']
   return request
