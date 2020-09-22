@@ -82,19 +82,21 @@ def handler(event, context):
           if 'x-forwarded-host' in headers:
               host = headers['x-forwarded-host'][0]
               custom_headers = get_headers(request['origin']['s3']['customHeaders'])
-              if 'analytics-host' in custom_headers and host in custom_headers['analytics-host']:
-                  if not 'authorization' in headers or not 'analytics-auth' in custom_headers or not headers['authorization'][0] in custom_headers['analytics-auth']:
-                      return unauthorized()
-                  args = parse_lambda_alias_arn(context.invoked_function_arn)
-                  function_arn = build_lambda_arn(**args)
-                  aws_lambda = boto3.client("lambda", region_name=args['region'])
-                  response = aws_lambda.list_tags(
-                    Resource=function_arn
-                  )
-                  tags = response['Tags']
-                  client = tags['Brand'] if tags.get('Brand') else tags['Client']
-                  body = get_analytics_page(client, custom_headers['analytics-addr'][0])
-                  return analytics_response(body)
+              if 'analytics-auth' in custom_headers:
+                  if ('analytics-host' in custom_headers and host in custom_headers['analytics-host']) or 'analytics-host' not in custom_headers:  
+                    if not 'authorization' in headers or not headers['authorization'][0] in custom_headers['analytics-auth']:
+                        return unauthorized()
+                    if 'analytics-addr' in custom_headers:
+                      args = parse_lambda_alias_arn(context.invoked_function_arn)
+                      function_arn = build_lambda_arn(**args)
+                      aws_lambda = boto3.client("lambda", region_name=args['region'])
+                      response = aws_lambda.list_tags(
+                        Resource=function_arn
+                      )
+                      tags = response['Tags']
+                      client = tags['Brand'] if tags.get('Brand') else tags['Client']
+                      body = get_analytics_page(client, custom_headers['analytics-addr'][0])
+                      return analytics_response(body)
           else:
               if not pathlib.Path(request['uri']).suffix:
                   request['uri'] = '/index.html'
