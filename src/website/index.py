@@ -97,9 +97,8 @@ def handler(event, context):
                       client = tags['Brand'] if tags.get('Brand') else tags['Client']
                       body = get_analytics_page(client, custom_headers['analytics-addr'][0])
                       return analytics_response(body)
-          else:
-              if not pathlib.Path(request['uri']).suffix:
-                  request['uri'] = '/index.html'
+          if not pathlib.Path(request['uri']).suffix:
+              request['uri'] = '/index.html'
       elif request['origin'].get('custom'):
         if request['uri'].startswith("/logs"):
           if request['method'] == "POST":
