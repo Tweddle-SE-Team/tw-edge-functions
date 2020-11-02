@@ -10,13 +10,14 @@ env:
 script:
 - rm -rf ./builds/
 - > 
+  #!/bin/bash
   for func in $(ls -1d src/*); do
     rsync -r ${func} builds/;
-    cd build/${func};
+    cd builds/${func%:*};
     bash install.sh;
-    zip -rDj ${func}.zip builds/${func};
+    zip -rDj builds/${func%:*}.zip builds/${func%:*};
     cd ../..;
-    md5sum ${func}.zip | cut -d" " -f1 > ${func}.zip.md5;
+    md5sum builds/${func%:*}.zip | cut -d" " -f1 > builds/${func%:*}.zip.md5;
     rm -rf builds/${func};
   done
 
