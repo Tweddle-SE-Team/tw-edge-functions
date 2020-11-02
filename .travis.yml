@@ -8,17 +8,18 @@ env:
   secure: AR0iUsZvILGEotQUWkW6oXg+OkI/VylAwkvlYI9X87jwevS4ZWHaos8Xe1cb5CpoLd+0pWnjlp++SbpR/o/HfzHCh5ueId15WHXiEYfe3VDKZqQ9U/XBAh+BmCbDYAOGs02CMsXMoHkRERBxBk5KfPrhuvPx69wKcLvuCCn/o0AkUVymeIKV2vbHxC7e5GMe1FXLPz/drjHDa78hUStXCvVxRUK6rErlyBse5esTE7EYsUb0Vb6LPvMLyyIEqoAy5rE2QP2MP52i9l5XF6gqiEIpOGLZoOjc2IiIp3bDxHGNmeZI+n06B2ArhcqjRVLYcZz8EBcP1dcp4cLTgvopp46DIChvwiThM2Tt8AXaQhG+HEqXtOCbkNZzGpUJT2tHLpv+9GJ2bIII3jh/JZ679RwZ14B+EvFLDxUcFyE5PJz5dLZ/007sSNbZdsvUCVHqlytHF5ApICivbxi/HrraFm636eDC+VtHGDWsUG1Ibe8/sUdcRq1UDQfQ5uHN5F0zPnUbQuziRbPYz+a2r7LuH3H+29iwcuG5osfo5oVX/pZqCPo3ms5yP9SRqQHr1EYYevM/zr5fCjpUoQOt1fNh1v4ZYK6b7WJSQot9tL7xnRBX2rD6Lv0a/+uTeofS8js5ZX1kR2qyOi99kqGKAkdGDbz+6rigDG/pIZGgOK4PZBU=
 
 script:
+- mkdir -p builds
 - rm -rf ./builds/
 - > 
   #!/bin/bash
   for func in $(ls -1d src/*); do
     rsync -r ${func} builds/;
-    cd builds/${func%:*};
+    cd builds/${func#/*};
     bash install.sh;
-    zip -rDj builds/${func%:*}.zip builds/${func%:*};
+    zip -rDj builds/${func#/*}.zip builds/${func#/*};
     cd ../..;
-    md5sum builds/${func%:*}.zip | cut -d" " -f1 > builds/${func%:*}.zip.md5;
-    rm -rf builds/${func};
+    md5sum builds/${func#/*}.zip | cut -d" " -f1 > builds/${func#/*}.zip.md5;
+    rm -rf builds/${func#/*};
   done
 
 deploy:
