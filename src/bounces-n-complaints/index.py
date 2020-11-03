@@ -11,6 +11,7 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 
 HOOK_URL = os.environ["SLACK_INCOMING_WEBHOOK"]
+CHANNEL = os.environ["SLACK_CHANNEL"]
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -61,19 +62,20 @@ def lambda_handler(event, context):
                     "short": True
                 }
             ],
-            "footer": "BlackSparkle",
-            "footer_icon": "https://img.lovepik.com/element/40055/2358.png_1200.png",
             "ts": timestamp.timestamp()
         })
 
     slack_message = {
-        "channel": "bounces-n-complaints",
+        "channel": CHANNEL,
         "username": "slackbot",
-        "icon_emoji": ":female-farmer:",
+        "icon_emoji": ":party-parrot:",
         "attachments": attachments
     }
 
     req = Request(HOOK_URL, json.dumps(slack_message).encode('utf-8'))
+    req.headers = {
+        "Content-Type": "application/json"
+    }
 
     try:
         response = urlopen(req)
